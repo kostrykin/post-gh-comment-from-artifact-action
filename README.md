@@ -3,3 +3,7 @@
 When triggered by another workflow, retrieves an artifact from that workflow, and publishes it as a comment into an issue or a pull request.
 
 Does nothing when triggered differnetly.
+
+## Examples
+
+- https://github.com/kostrykin/build-latex-document-action/pull/11
