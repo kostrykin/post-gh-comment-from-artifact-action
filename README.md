@@ -7,3 +7,4 @@ Does nothing when triggered differnetly.
 ## Examples
 
 - https://github.com/kostrykin/build-latex-document-action/pull/11
+- https://github.com/kostrykin/report-test-coverage-action/pull/4
