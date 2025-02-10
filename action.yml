@@ -1,0 +1,47 @@
+name: 'post-gh-comment-from-artifact'
+description: 'Post comment on GitHub from artifact'
+inputs:
+
+  artifact:
+    description: 'Name of the artifact to retrieve from the triggering workflow.'
+    required: 'true'
+    default: 'comment'
+
+  github_token:
+    description: 'A github token that has write access to the repository where the comment is to be posted.'
+    required: 'true'
+    default: ${{ github.token }}
+
+runs:
+
+  using: "composite"
+  steps:
+
+    - name: Download the comment artifact
+      if: github.event_name == 'workflow_run'
+      uses: actions/download-artifact@v4.1.1
+      continue-on-error: true
+      with:
+        name: ${{ inputs.artifact }}
+        run-id: ${{ github.event.workflow_run.id }}
+        github-token: ${{ inputs.github_token }}
+
+    - name: Read comment artifact
+      if: github.event_name == 'workflow_run'
+      continue-on-error: true
+      shell: bash
+      run: echo "comment_json=$(jq -c . < comment.json)" >> $GITHUB_ENV
+
+    - name: Create the comment
+      if: github.event_name == 'workflow_run'
+      uses: actions/github-script@v7
+      continue-on-error: true
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: ${{ fromJSON(env.comment_json).issue_number }},
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '${{ fromJSON(env.comment_json).body }}'
+          })
