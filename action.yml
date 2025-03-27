@@ -12,6 +12,11 @@ inputs:
     required: 'true'
     default: ${{ github.token }}
 
+  hide_by_signature:
+    description: 'Hide previous comments, if they end with the given signature.'
+    required: 'false'
+    default: ''
+
 runs:
 
   using: "composite"
@@ -45,3 +50,10 @@ runs:
             repo: context.repo.repo,
             body: '${{ fromJSON(env.comment_json).body }}'
           })
+
+    - name: Hide previous comments
+      uses: int128/hide-comment-action@v1
+      if: inputs.github_token != ''
+      with:
+        token: ${{ inputs.github_token }}
+        ends-with: ${{ inputs.hide_by_signature }}
