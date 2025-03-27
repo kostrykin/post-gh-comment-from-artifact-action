@@ -43,6 +43,7 @@ runs:
       with:
         token: ${{ inputs.github_token }}
         ends-with: ${{ inputs.signature }}
+        issue-number: ${{ fromJSON(env.comment_json).issue_number }}
 
     - name: Create the comment
       if: github.event_name == 'workflow_run'
