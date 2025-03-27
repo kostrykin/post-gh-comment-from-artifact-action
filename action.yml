@@ -40,6 +40,7 @@ runs:
     - name: Hide previous comments
       uses: int128/hide-comment-action@v1
       if: inputs.signature != ''
+      continue-on-error: true
       with:
         token: ${{ inputs.github_token }}
         ends-with: ${{ inputs.signature }}
