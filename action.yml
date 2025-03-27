@@ -12,8 +12,8 @@ inputs:
     required: 'true'
     default: ${{ github.token }}
 
-  hide_by_signature:
-    description: 'Hide previous comments, if they end with the given signature.'
+  signature:
+    description: 'Signature will be appended to the comment, and previous comments will be hidden if they end with the same signature.'
     required: 'false'
     default: ''
 
@@ -48,12 +48,12 @@ runs:
             issue_number: ${{ fromJSON(env.comment_json).issue_number }},
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: '${{ fromJSON(env.comment_json).body }}'
+            body: '${{ fromJSON(env.comment_json).body }}${{ inputs.signature }}'
           })
 
     - name: Hide previous comments
       uses: int128/hide-comment-action@v1
-      if: inputs.github_token != ''
+      if: inputs.signature != ''
       with:
         token: ${{ inputs.github_token }}
-        ends-with: ${{ inputs.hide_by_signature }}
+        ends-with: ${{ inputs.signature }}
